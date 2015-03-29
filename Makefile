@@ -13,6 +13,7 @@ clean:
 	rm -rf build
 
 startdb:
+	@sudo docker rm wiki-db || true
 	# start a database instance
 	sudo docker run --name wiki-db -d -p 3306:3306 \
 		-e MYSQL_ROOT_PASSWORD=s3cr3t \
