@@ -19,10 +19,10 @@
         -->
       <ldap key="ldapRepository" name="LDAP Repository@hecate.atlassian.com" cache="true">
         <host>ldap.jenkins-ci.org</host>
-        <port>389</port>
+        <port>636</port>
         <securityPrincipal>cn=admin,dc=jenkins-ci,dc=org</securityPrincipal>
         <securityCredential>@@LDAP_PASSWORD@@</securityCredential>
-        <securityProtocol>plain</securityProtocol>
+        <securityProtocol>ssl</securityProtocol>
         <securityAuthentication>simple</securityAuthentication>
         <baseContext>dc=jenkins-ci,dc=org</baseContext>
 
