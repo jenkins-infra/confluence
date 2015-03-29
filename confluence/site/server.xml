@@ -1,0 +1,29 @@
+<Server port="8000" shutdown="SHUTDOWN" debug="0">
+  <!-- THIS FILE IS MANAGED BY PUPPET : DO NOT CHANGE -->
+  <Service name="Tomcat-Standalone">
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector" port="8081"
+               maxThreads="75" address="127.0.0.1"
+               enableLookups="false" redirectPort="8443" acceptCount="10" debug="0" connectionTimeout="20000"
+               scheme="https" proxyName="wiki.jenkins-ci.org" proxyPort="443"
+               useURIValidationHack="false" URIEncoding="UTF-8"/>
+
+    <Engine name="Standalone" defaultHost="localhost" debug="0">
+      <Host name="localhost" debug="0" appBase="webapps" unpackWARs="true" autoDeploy="false">
+        <Context path="" docBase="/srv/wiki/current/confluence" debug="0" reloadable="false" useHttpOnly="true">
+          <!-- Logger is deprecated in Tomcat 5.5. Logging configuration for Confluence is specified in confluence/WEB-INF/classes/log4j.properties -->
+          <Manager pathname="" />
+        </Context>
+
+        <!-- Tomcat manager is used to invalidate sessions. This helps fighting with ongoing spams -->
+        <Context path="/tomcat-manager" docBase="/srv/wiki/tomcat-manager.war" privileged="true" unpackWARs="false">
+          <Realm className="org.apache.catalina.realm.JNDIRealm"
+                 connectionURL="ldap://jenkins-ci.org:389"
+                 userPattern="cn={0},ou=people,dc=jenkins-ci,dc=org"
+                 roleBase="ou=groups,dc=jenkins-ci,dc=org"
+                 roleName="cn"
+                 roleSearch="(member={0})"/>
+        </Context>
+      </Host>
+    </Engine>
+  </Service>
+</Server>
