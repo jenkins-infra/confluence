@@ -1,6 +1,6 @@
 # Basics
 #
-FROM durdn/atlassian-base
+FROM jenkinsciinfra/atlassian-base:build2
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
 
