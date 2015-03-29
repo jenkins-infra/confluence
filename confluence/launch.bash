@@ -4,42 +4,50 @@ set -o errexit
 . /usr/local/share/atlassian/common.bash
 
 sudo own-volume
-rm -f /srv/jira/home/.jira-home.lock
 
 if [ -n "$DATABASE_URL" ]; then
-  extract_database_url "$DATABASE_URL" DB /srv/jira/base/lib
+  extract_database_url "$DATABASE_URL" DB /srv/wiki/base/lib
   DB_JDBC_URL="$(xmlstarlet esc "$DB_JDBC_URL")"
   SCHEMA=''
   if [ "$DB_TYPE" != "mysql" ]; then
     SCHEMA='<schema-name>public</schema-name>'
   fi
 
-  cat <<END > /srv/jira/home/dbconfig.xml
+  cat <<END > /srv/wiki/home/confluence.cfg.xml
 <?xml version="1.0" encoding="UTF-8"?>
-<jira-database-config>
-  <name>defaultDS</name>
-  <delegator-name>default</delegator-name>
-  <database-type>$DB_TYPE</database-type>
-  $SCHEMA
-  <jdbc-datasource>
-    <url>$DB_JDBC_URL</url>
-    <driver-class>$DB_JDBC_DRIVER</driver-class>
-    <username>$DB_USER</username>
-    <password>$DB_PASSWORD</password>
-    <pool-min-size>20</pool-min-size>
-    <pool-max-size>20</pool-max-size>
-    <pool-max-wait>30000</pool-max-wait>
-    <pool-max-idle>20</pool-max-idle>
-    <pool-remove-abandoned>true</pool-remove-abandoned>
-    <pool-remove-abandoned-timeout>300</pool-remove-abandoned-timeout>
-  </jdbc-datasource>
-</jira-database-config>
+<confluence-configuration>
+  <properties>
+    <property name="admin.ui.allow.manual.backup.download">true</property>
+    <property name="attachments.dir">${CONFLUENCE_HOME}/attachments</property>
+    <property name="confluence.webapp.context.path"></property>
+    <property name="daily.backup.dir">${CONFLUENCE_HOME}/backups</property>
+    <property name="hibernate.c3p0.acquire_increment">1</property>
+    <property name="hibernate.c3p0.idle_test_period">100</property>
+    <property name="hibernate.c3p0.max_size">30</property>
+    <property name="hibernate.c3p0.max_statements">0</property>
+    <property name="hibernate.c3p0.min_size">0</property>
+    <property name="hibernate.c3p0.timeout">30</property>
+    <property name="hibernate.connection.driver_class">$DB_JDBC_DRIVER</property>
+    <property name="hibernate.connection.password">$DB_PASSWORD</property>
+    <property name="hibernate.connection.url">$DB_JDBC_URL?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf8</property>
+    <property name="hibernate.connection.username">$DB_USERNAME</property>
+    <property name="hibernate.database.lower_non_ascii_supported">true</property>
+    <property name="hibernate.dialect">com.atlassian.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.setup">true</property>
+    <property name="lucene.index.dir">${CONFLUENCE_HOME}/index</property>
+    <property name="retrievalUrl">http://localhost:8081</property>
+    <property name="rootPath">/srv/wiki/cache/display</property>
+    <property name="userName">$DB_USERNAME</property>
+    <property name="password">$DB_PASSWORD</property>
+    <property name="webwork.multipart.saveDir">${confluenceHome}/temp</property>
+  </properties>
+</confluence-configuration>
 END
 fi
 
 # replace front-end reverse proxy setting in server.xml
-cat /srv/jira/site/conf/server.xml | sed -e "s,@@PROXY_NAME@@,$PROXY_NAME," -e "s,@@PROXY_PORT@@,$PROXY_PORT," -e "s,@@PROXY_SCHEME@@,$PROXY_SCHEME," > /tmp/server.xml
-cp /tmp/server.xml /srv/jira/site/conf/server.xml
+cat /srv/wiki/site/conf/server.xml | sed -e "s,@@PROXY_NAME@@,$PROXY_NAME," -e "s,@@PROXY_PORT@@,$PROXY_PORT," -e "s,@@PROXY_SCHEME@@,$PROXY_SCHEME," > /tmp/server.xml
+cp /tmp/server.xml /srv/wiki/site/conf/server.xml
 
-export CATALINA_BASE=/srv/jira/site
-/srv/jira/base/bin/start-jira.sh -fg
+export CATALINA_BASE=/srv/wiki/site
+/srv/wiki/base/bin/startup.sh
