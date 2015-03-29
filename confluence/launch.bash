@@ -13,7 +13,9 @@ if [ -n "$DATABASE_URL" ]; then
     SCHEMA='<schema-name>public</schema-name>'
   fi
 
-  cat <<END > /srv/wiki/home/confluence.cfg.xml
+  CFGXML=/srv/wiki/home/confluence.cfg.xml
+
+  cat <<END > $CFGXML
 <?xml version="1.0" encoding="UTF-8"?>
 <confluence-configuration>
   <properties>
@@ -40,6 +42,13 @@ if [ -n "$DATABASE_URL" ]; then
     <property name="userName">$DB_USERNAME</property>
     <property name="password">$DB_PASSWORD</property>
     <property name="webwork.multipart.saveDir">${confluenceHome}/temp</property>
+END
+
+  if [ -d ${CFGXML}.d ]; then
+    cat ${CFGXML}.d/*.conf >> $CFGXML
+  fi
+
+  cat << END >> $CFGXML
   </properties>
 </confluence-configuration>
 END
