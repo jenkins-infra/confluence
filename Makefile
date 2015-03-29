@@ -37,10 +37,11 @@ run: build/wiki.docker
 	@sudo docker rm wiki || true
 	sudo docker run -t -i --name wiki \
 		--link wiki-db:db \
-		--link ldap:cucumber.jenkins-ci.org \
+		--link ldap:ldap.jenkins-ci.org \
 		-e PROXY_NAME=localhost \
 		-e PROXY_PORT=8080 \
 		-e PROXY_SCHEME=http \
+		-e LDAP_PASSWORD=s3cr3t \
 		-v `pwd`/data:/srv/wiki/home \
 		-p 8080:8080 -e DATABASE_URL=mysql://wiki:kiwi@db/wikidb ${IMAGENAME}
 
