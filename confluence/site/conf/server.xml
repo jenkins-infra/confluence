@@ -1,7 +1,7 @@
 <Server port="8000" shutdown="SHUTDOWN" debug="0">
   <Service name="Tomcat-Standalone">
-    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector" port="8081"
-               maxThreads="75" address="127.0.0.1"
+    <Connector className="org.apache.coyote.tomcat4.CoyoteConnector" port="8080"
+               maxThreads="75" address="0.0.0.0"
                enableLookups="false" redirectPort="8443" acceptCount="10" debug="0" connectionTimeout="20000"
                scheme="@@PROXY_SCHEME@@" proxyName="@@PROXY_NAME@@" proxyPort="@@PROXY_PORT@@"
                useURIValidationHack="false" URIEncoding="UTF-8"/>
