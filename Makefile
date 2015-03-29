@@ -48,7 +48,7 @@ run: build/wiki.docker
 
 
 build/wiki.docker: confluence/Dockerfile confluence/launch.bash $(shell find confluence/site/ -type f)
-	@mkdir build || true
+	@mkdir build 2> /dev/null || true
 	sudo docker build -t ${IMAGENAME} confluence
 	touch $@
 
