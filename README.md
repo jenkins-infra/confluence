@@ -17,13 +17,20 @@ The `site` portion includes our site-local customizations to JIRA, such as:
 
 Every time you start the instance fresh (fresh db and `rm -rf ./data`), Confluence wants you to go
 through the setup wizard. This process generates a new server ID, which means you have to request
-a new evaluation license all the time. You can make this little easier.
+a new evaluation license all the time. You can make this little easier by preseeding `./data/confluence.cfg.xml`
+with the following content
 
-1. go through setup wizard, and pause immediately after you entered your license.
-2. Capture `./data/confluence.cfg.xml` and save it somewhere 
+    <confluence-configuration>
+      <setupStep>setuplicense</setupStep>
+      <setupType>initial</setupType>
+      <buildNumber>0</buildNumber>
+      <properties>
+        <property name="confluence.setup.server.id">XXXX-XXXX-XXXX-XXXX</property>
+        <property name="confluence.webapp.context.path"></property>
+      </properties>
+    </confluence-configuration>
 
-Now, when you start fresh, you can preseed `./data/confluence.cfg.xml` with this master  
-file to skip the license screen.
+This fixes the server ID, so that you can use the same evaluation license over and over.
 
 ## How to develop this container
 You can start this container with mock LDAP and DB.
