@@ -30,12 +30,6 @@ RUN mkdir -p /srv/wiki/base /srv/wiki/site /srv/wiki/home
 RUN curl -Lks https://www.atlassian.com/software/confluence/downloads/binary/confluence-${CONFLUENCE_VERSION}-std.tar.gz -o /root/confluence.tar.gz; tar zxf /root/confluence.tar.gz --strip=1 -C /srv/wiki/base; rm /root/confluence.tar.gz
 RUN echo "confluence.home = /srv/wiki/home" > /srv/wiki/base/confluence/WEB-INF/classes/confluence-init.properties
 
-ADD launch.bash /launch
-ADD site /srv/wiki/site
-
-RUN chown -R wiki:wiki /srv/wiki
-
-
 # The compartmentalized URL that JIRA is going to be referenced as.
 ENV PROXY_SCHEME https
 ENV PROXY_NAME wiki.jenkins-ci.org
@@ -43,6 +37,12 @@ ENV PROXY_PORT 443
 
 # Password to LDAP server.
 ENV LDAP_PASSWORD password
+
+ADD launch.bash /launch
+ADD site /srv/wiki/site
+
+RUN chown -R wiki:wiki /srv/wiki
+
 
 WORKDIR /srv/wiki
 VOLUME ["/srv/wiki/home"]
