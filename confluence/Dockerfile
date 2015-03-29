@@ -36,6 +36,9 @@ RUN curl -L http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_DRIVER}.tar.g
     cp /tmp/${MYSQL_DRIVER}/${MYSQL_DRIVER}-bin.jar /srv/wiki/base/lib/${MYSQL_DRIVER}-bin.jar; \
     rm -rf /tmp/${MYSQL_DRIVER}
 
+# Allow the user to start cron
+RUN echo "wiki  ALL=(ALL) NOPASSWD: /usr/sbin/cron" >> /etc/sudoers
+
 # The compartmentalized URL that JIRA is going to be referenced as.
 ENV PROXY_SCHEME https
 ENV PROXY_NAME wiki.jenkins-ci.org

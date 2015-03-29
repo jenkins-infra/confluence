@@ -3,7 +3,7 @@ set -o errexit
 
 # install cron
 crontab ~/site/cron.conf
-cron -f &
+sudo cron -f &
 
 . /usr/local/share/atlassian/common.bash
 
