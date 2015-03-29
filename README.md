@@ -1,4 +1,5 @@
 # Confluence Container for jenkins-ci.org
+[![Build Status](http://ci.jenkins-ci.org/buildStatus/icon?job=infra_confluence)](http://ci.jenkins-ci.org/view/Infrastructure/job/infra_confluence/)
 
 This container defines Confluence behind wiki.jenkins-ci.org.
 The container consists of three main pieces:
