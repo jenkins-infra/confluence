@@ -1,7 +1,7 @@
 IMAGENAME=jenkinsciinfra/confluence
 TAG=$(shell date '+%Y%m%d_%H%M%S')
 
-image: build/confluence.docker
+image: build/wiki.docker
 
 tag: image
 	docker tag ${IMAGENAME} ${IMAGENAME}:${TAG}
