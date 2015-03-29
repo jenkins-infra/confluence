@@ -15,7 +15,6 @@
           <!-- to simplify going through wizard, expose a fully configured DataSource -->
           <Resource name="jdbc/wiki" auth="Container" type="javax.sql.DataSource"
                     maxActive="30" maxIdle="30" maxWait="10000"
-                    removeAbandoned="true"
                     username="@@DB_USER@@" password="@@DB_PASSWORD@@" driverClassName="@@DB_JDBC_DRIVER@@"
                         url="@@DB_JDBC_URL@@"/>
         </Context>
