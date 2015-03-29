@@ -30,6 +30,12 @@ RUN mkdir -p /srv/wiki/base /srv/wiki/site /srv/wiki/home
 RUN curl -Lks https://www.atlassian.com/software/confluence/downloads/binary/confluence-${CONFLUENCE_VERSION}-std.tar.gz -o /root/confluence.tar.gz; tar zxf /root/confluence.tar.gz --strip=1 -C /srv/wiki/base; rm /root/confluence.tar.gz
 RUN echo "confluence.home = /srv/wiki/home" > /srv/wiki/base/confluence/WEB-INF/classes/confluence-init.properties
 
+# Download and place MySQL driver
+ENV MYSQL_DRIVER=mysql-connector-java-5.1.30
+RUN curl -L http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_DRIVER}.tar.gz | tar zxv -C /tmp; \
+    cp /tmp/${MYSQL_DRIVER}/${MYSQL_DRIVER}-bin.jar /srv/wiki/base/lib/${MYSQL_DRIVER}-bin.jar; \
+    rm -rf /tmp/${MYSQL_DRIVER}
+
 # The compartmentalized URL that JIRA is going to be referenced as.
 ENV PROXY_SCHEME https
 ENV PROXY_NAME wiki.jenkins-ci.org
