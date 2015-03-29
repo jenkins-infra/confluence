@@ -13,9 +13,9 @@ clean:
 	rm -rf build
 
 startdb:
-	@sudo docker rm wiki-db || true
+	@docker rm wiki-db || true
 	# start a database instance
-	sudo docker run --name wiki-db -d -p 3306:3306 \
+	docker run --name wiki-db -d -p 3306:3306 \
 		-e MYSQL_ROOT_PASSWORD=s3cr3t \
 		-e MYSQL_USER=wiki \
 		-e MYSQL_PASSWORD=kiwi \
@@ -24,19 +24,19 @@ startdb:
     
 restoredb:
 	# restore dump from DB
-	gunzip -c backup.db.gz | sudo docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
+	gunzip -c backup.db.gz | docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
 	# tweak database for test
-	# cat tweak.sql | sudo docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
+	# cat tweak.sql | docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
 
 startldap:
-	@sudo docker rm ldap || true
-	sudo docker run -d --name ldap \
+	@docker rm ldap || true
+	docker run -d --name ldap \
             -p 9389:389 jenkinsciinfra/mock-ldap
 
 run: build/wiki.docker
 	# start JIRA
-	@sudo docker rm wiki || true
-	sudo docker run -t -i --name wiki \
+	@docker rm wiki || true
+	docker run -t -i --name wiki \
 		--link wiki-db:db \
 		--link ldap:ldap.jenkins-ci.org \
 		-e PROXY_NAME=localhost \
@@ -49,7 +49,7 @@ run: build/wiki.docker
 
 build/wiki.docker: confluence/Dockerfile confluence/launch.bash $(shell find confluence/site/ -type f)
 	@mkdir build 2> /dev/null || true
-	sudo docker build -t ${IMAGENAME} confluence
+	docker build -t ${IMAGENAME} confluence
 	touch $@
 
 data:
