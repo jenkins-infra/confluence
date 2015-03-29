@@ -60,5 +60,8 @@ if [ -f $CFGXML ]; then
   mv /tmp/confluence.cfg.xml $CFGXML
 fi
 
+# somehow Confluence doesn't seem to create these directories on its own
+mkdir -p /srv/wiki/site/{temp,webapps,work}
+
 export CATALINA_BASE=/srv/wiki/site
 /srv/wiki/base/bin/catalina.sh run
