@@ -30,13 +30,31 @@ cat /srv/wiki/site/classes/atlassian-user.xml | sed \
   -e "s,@@LDAP_PASSWORD@@,$LDAP_PASSWORD," \
   > /srv/wiki/base/confluence/WEB-INF/classes/atlassian-user.xml
 
+# adds/updates a property to confluence.cfg.xml
+# by first deleting and inserting, it ensures that it works correctly even if the file didn't contain the entry
+# to begin with
+function add-property {
+  n="$1"
+  v="$2"
+  CFGXML=/srv/wiki/home/confluence.cfg.xml
+  cat $CFGXML \
+  | xmlstarlet ed -d "//property[@name='$n']" \
+  | xmlstarlet ed -s "/confluence-configuration/properties" -t elem -n prop -v "$v" \
+  | xmlstarlet ed -s "//prop" -t attr -n name -v "$n" \
+  | xmlstarlet ed -r "//prop" -v "property" \
+  >  /tmp/confluence.cfg.xml
+  mv /tmp/confluence.cfg.xml $CFGXML
+}
+
+echo DB=$DB_JDBC_URL
+
 CFGXML=/srv/wiki/home/confluence.cfg.xml
 if [ -f $CFGXML ]; then
   # if config file already exists, touch up its database config
+  add-property hibernate.connection.username "$DB_USER"
+  add-property hibernate.connection.password "$DB_PASSWORD"
+  add-property hibernate.connection.url "$(xmlstarlet esc "$DB_JDBC_URL")"
   cat $CFGXML \
-  | xmlstarlet ed -u "//property[@name='hibernate.connection.username']" -v "$DB_USER" \
-  | xmlstarlet ed -u "//property[@name='hibernate.connection.password']" -v "$DB_PASSWORD" \
-  | xmlstarlet ed -u "//property[@name='hibernate.connection.url']"      -v "$DB_JDBC_URL" \
   | xmlstarlet ed -d "//property[@name='hibernate.connection.datasource']" \
   >  /tmp/confluence.cfg.xml
   mv /tmp/confluence.cfg.xml $CFGXML

@@ -13,7 +13,7 @@ The `site` portion includes our site-local customizations to JIRA, such as:
 * Different templates for email notifications
 * Customized Tomcat configurations
 
-## Fix Server ID
+## Confluence Setup Wizard
 
 Every time you start the instance fresh (fresh db and `rm -rf ./data`), Confluence wants you to go
 through the setup wizard. This process generates a new server ID, which means you have to request
@@ -31,6 +31,9 @@ with the following content
     </confluence-configuration>
 
 This fixes the server ID, so that you can use the same evaluation license over and over.
+
+When asked to configure database, choose "DataSource connection" and type `java:comp/env/jdbc/wiki`
+as the value.
 
 ## How to develop this container
 You can start this container with mock LDAP and DB.
