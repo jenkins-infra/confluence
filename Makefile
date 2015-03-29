@@ -26,7 +26,7 @@ restoredb:
 	# restore dump from DB
 	gunzip -c backup.db.gz | sudo docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
 	# tweak database for test
-	cat tweak.sql | sudo docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
+	# cat tweak.sql | sudo docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
 
 startldap:
 	@sudo docker rm ldap || true
