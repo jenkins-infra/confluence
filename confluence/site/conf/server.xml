@@ -11,6 +11,13 @@
         <Context path="" docBase="/srv/wiki/base/confluence" debug="0" reloadable="false" useHttpOnly="true">
           <!-- Logger is deprecated in Tomcat 5.5. Logging configuration for Confluence is specified in confluence/WEB-INF/classes/log4j.properties -->
           <Manager pathname="" />
+
+          <!-- to simplify going through wizard, expose a fully configured DataSource -->
+          <Resource name="jdbc/wiki" auth="Container" type="javax.sql.DataSource"
+                    maxActive="30" maxIdle="30" maxWait="10000"
+                    removeAbandoned="true"
+                    username="@@DB_USER@@" password="@@DB_PASSWORD@@" driverClassName="@@DB_JDBC_DRIVER@@"
+                        url="@@DB_JDBC_URL@@"/>
         </Context>
 
         <!-- Tomcat manager is used to invalidate sessions. This helps fighting with ongoing spams -->
