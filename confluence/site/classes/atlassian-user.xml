@@ -1,0 +1,61 @@
+<atlassian-user>
+    <repositories>
+        <!--
+             If you are using a key other than "ldapRepository" and "hibernateRepository", you will
+             need to extract the following files from confluence.jar and change the cache names:
+
+             - confluence/WEB-INF/classes/confluence-coherence-cache-config.xml
+             - confluence/WEB-INF/classes/confluence-coherence-cache-config-clustered.xml
+
+             See http://confluence.atlassian.com/display/DOC/Performance+Tuning#PerformanceTuning-CacheTuning
+        -->
+
+        <!-- LDAP repository -->
+        <!--
+             You will need to uncomment the ldap and hibernate repositories below to enable LDAP
+             user management. For more information, please see:
+
+             http://confluence.atlassian.com/display/DOC/Customising+atlassian-user.xml
+        -->
+      <ldap key="ldapRepository" name="LDAP Repository@hecate.atlassian.com" cache="true">
+        <host>ldap.jenkins-ci.org</host>
+        <port>389</port>
+        <securityPrincipal>cn=admin,dc=jenkins-ci,dc=org</securityPrincipal>
+        <securityCredential>@@LDAP_PASSWORD@@</securityCredential>
+        <securityProtocol>plain</securityProtocol>
+        <securityAuthentication>simple</securityAuthentication>
+        <baseContext>dc=jenkins-ci,dc=org</baseContext>
+
+        <baseUserNamespace>ou=people,dc=jenkins-ci,dc=org</baseUserNamespace>
+        <baseGroupNamespace>ou=groups,dc=jenkins-ci,dc=org</baseGroupNamespace>
+        <usernameAttribute>cn</usernameAttribute>
+        <userSearchFilter>(objectClass=inetorgperson)</userSearchFilter>
+        <firstnameAttribute>givenname</firstnameAttribute>
+        <surnameAttribute>sn</surnameAttribute>
+        <emailAttribute>mail</emailAttribute>
+        <groupnameAttribute>cn</groupnameAttribute>
+        <groupSearchFilter>(objectClass=groupOfNames)</groupSearchFilter>
+        <membershipAttribute>member</membershipAttribute>
+        <userSearchAllDepths>false</userSearchAllDepths>
+        <groupSearchAllDepths>false</groupSearchAllDepths>
+      </ldap>
+      <!-- END of LDAP Repository -->
+
+        <!-- Default confluence user repository -->
+        <hibernate name="Hibernate Repository" key="hibernateRepository"  description="Hibernate Repository" cache="true"/>
+
+        <!-- CROWD respository -->
+        <!--
+             You will need to uncomment the repository below to enable Crowd integration and remove other
+             repositories conifigured in this file.
+
+             For more information, please see:
+             http://confluence.atlassian.com/display/CROWD/Integrating+Crowd+with+Atlassian+Confluence
+        -->
+        <!--
+             <crowd key="crowd" name="Crowd Repository"/>
+        -->
+        <!-- END of CROWD repository -->
+
+    </repositories>
+</atlassian-user>
