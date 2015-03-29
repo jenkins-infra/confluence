@@ -61,4 +61,4 @@ cp /tmp/server.xml /srv/wiki/site/conf/server.xml
 cat /srv/wiki/site/classes/atlassian-user.xml | sed -e "s,@@LDAP_PASSWORD@@,$LDAP_PASSWORD," > /srv/wiki/base/confluence/WEB-INF/classes/atlassian-user.xml
 
 export CATALINA_BASE=/srv/wiki/site
-/srv/wiki/base/bin/startup.sh
+/srv/wiki/base/bin/catalina.sh run
