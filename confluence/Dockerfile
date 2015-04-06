@@ -24,7 +24,7 @@ RUN \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/oracle-jdk6-installer
 
-RUN /usr/sbin/useradd --create-home --home-dir /srv/wiki --groups atlassian --shell /bin/bash wiki
+RUN /usr/sbin/groupadd --gid 2000 wiki; /usr/sbin/useradd --create-home --home-dir /srv/wiki --groups atlassian --uid 2000 --gid wiki --shell /bin/bash wiki
 RUN mkdir -p /srv/wiki/base /srv/wiki/site /srv/wiki/home
 # see https://www.atlassian.com/software/confluence/download-archives for options
 RUN curl -Lks https://www.atlassian.com/software/confluence/downloads/binary/confluence-${CONFLUENCE_VERSION}-std.tar.gz -o /root/confluence.tar.gz; tar zxf /root/confluence.tar.gz --strip=1 -C /srv/wiki/base; rm /root/confluence.tar.gz
