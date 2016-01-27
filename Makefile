@@ -6,9 +6,6 @@ image: build/wiki.docker
 tag: image
 	docker tag ${IMAGENAME} ${IMAGENAME}:${TAG}
 
-push :
-	docker push ${IMAGENAME}
-
 clean:
 	rm -rf build
 
