@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Killing all JVMs with prejudice"
+killall -9 java
