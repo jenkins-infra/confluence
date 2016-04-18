@@ -26,12 +26,14 @@ cat ~/site/conf/server.xml | sed \
   -e "s,@@DB_USER@@,$DB_USER," \
   -e "s,@@DB_PASSWORD@@,$DB_PASSWORD," \
   -e "s,@@DB_JDBC_DRIVER@@,$DB_JDBC_DRIVER," \
+  -e "s,@@LDAP_HOST@@,$LDAP_HOST," \
   | xmlstarlet ed -u "//Resource[@name='jdbc/wiki']/@url" -v "$DB_JDBC_URL" \
   > /tmp/server.xml
 mv  /tmp/server.xml ~/site/conf/server.xml
 
 cat ~/site/classes/atlassian-user.xml | sed \
   -e "s,@@LDAP_PASSWORD@@,$LDAP_PASSWORD," \
+  -e "s,@@LDAP_HOST@@,$LDAP_HOST," \
   > ~/base/confluence/WEB-INF/classes/atlassian-user.xml
 
 # adds/updates a property to confluence.cfg.xml

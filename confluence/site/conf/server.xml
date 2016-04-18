@@ -22,7 +22,7 @@
         <!-- Tomcat manager is used to invalidate sessions. This helps fighting with ongoing spams -->
         <Context path="/tomcat-manager" docBase="/srv/wiki/site/tomcat-manager.war" privileged="true" unpackWARs="false">
           <Realm className="org.apache.catalina.realm.JNDIRealm"
-                 connectionURL="ldaps://ldap.jenkins-ci.org"
+                 connectionURL="ldaps://@@LDAP_HOST@@"
                  userPattern="cn={0},ou=people,dc=jenkins-ci,dc=org"
                  roleBase="ou=groups,dc=jenkins-ci,dc=org"
                  roleName="cn"

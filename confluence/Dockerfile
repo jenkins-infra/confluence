@@ -46,6 +46,7 @@ ENV PROXY_PORT 443
 
 # Password to LDAP server.
 ENV LDAP_PASSWORD password
+ENV LDAP_HOST ldap.jenkins.io
 
 ADD launch.bash /launch
 ADD site /srv/wiki/site

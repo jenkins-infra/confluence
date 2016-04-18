@@ -35,7 +35,7 @@ run: build/wiki.docker
 	@docker rm wiki || true
 	docker run -t -i --name wiki \
 		--link wiki-db:db \
-		--link ldap:ldap.jenkins-ci.org \
+		--link ldap:ldap.jenkins.io \
 		-e PROXY_NAME=localhost \
 		-e PROXY_PORT=8080 \
 		-e PROXY_SCHEME=http \
