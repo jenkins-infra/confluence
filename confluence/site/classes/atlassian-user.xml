@@ -18,7 +18,7 @@
              http://confluence.atlassian.com/display/DOC/Customising+atlassian-user.xml
         -->
       <ldap key="ldapRepository" name="LDAP Repository@hecate.atlassian.com" cache="true">
-        <host>ldap.jenkins-ci.org</host>
+        <host>ldap.jenkins.io</host>
         <port>636</port>
         <securityPrincipal>cn=admin,dc=jenkins-ci,dc=org</securityPrincipal>
         <securityCredential>@@LDAP_PASSWORD@@</securityCredential>
