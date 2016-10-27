@@ -19,7 +19,7 @@ node('docker') {
 
 
     stage 'Build'
-    def whale = docker.build("${imageName}:${imageTag}", '--no-cache --rm .')
+    def whale = docker.build("${imageName}:${imageTag}", '--no-cache --rm confluence')
 
     stage 'Deploy'
     whale.push()
