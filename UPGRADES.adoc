@@ -1,6 +1,11 @@
 = Upgrade Notes
 
 
+== 3,5.17 to 5.0.3
+
+* Upgraded from JDK6 to an `openjdk:7-jre` image since 5.x dropped support for JRE6
+* No notable database issues on migration, just lots of I/O saturation in the process
+
 == 3.4.7 to 3.5.17
 
 === Issues encountered
