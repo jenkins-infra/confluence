@@ -1,0 +1,221 @@
+= Upgrade Notes
+
+
+== 3.4.7 to 3.5.17
+
+=== Issues encountered
+
+
+link:https://confluence.atlassian.com/fishkb/mysql-database-migration-fails-with-specified-key-was-too-long-max-key-length-is-1000-bytes-298978735.html[MySQL transaction isolation level settings] needed to be tweaked.
+
+
+
+link:https://confluence.atlassian.com/fishkb/mysql-database-migration-fails-with-specified-key-was-too-long-max-key-length-is-1000-bytes-298978735.html[Specified key was too long max key length is 1000 bytes]
+appears to be a local testing issue. Verified the production
+(`hudson_confluence`) database uses the InnoDB engine. Also needed to make sure
+that the MySQL server has the `utf8` charset set up properly.
+
+
+Foreign key constraint failure on upgrade, link:https://confluence.atlassian.com/confkb/during-confluence-upgrade-foreign-key-constraint-fails-on-spaceid-references-spaces-667386585.html[related guide]
+
+[source]
+----
+2017-04-01 15:39:48,610 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Unsuccessful: alter table BODYCONTENT add constraint FKA898D4778DD41734 foreign key (CONTENTID) references CONTENT (CONTENTID)
+2017-04-01 15:39:48,610 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_1b`, CONSTRAINT `FKA898D4778DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+2017-04-01 15:39:48,611 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute couldnot complete schema update
+com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_1b`, CONSTRAINT `FKA898D4778DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+----
+
+When querying for invalid links:
+
+[source, sql]
+----
+select count(*) FROM BODYCONTENT WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+[source]
+----
++----------+
+| count(*) |
++----------+
+|      153 |
++----------+
+----
+
+Purging those invalid references
+
+[source,sql]
+----
+DELETE FROM BODYCONTENT WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+
+More foreign key constraint failures
+
+[source]
+----
+2017-04-01 15:57:07,597 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Unsuccessful: alter table CONTENT_LABEL add constraint FKF0E7436E8DD41734 foreign key (CONTENTID) references CONTENT (CONTENTID)
+2017-04-01 15:57:07,597 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_24`, CONSTRAINT `FKF0E7436E8DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+2017-04-01 15:57:07,599 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute couldnot complete schema update
+com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_24`, CONSTRAINT `FKF0E7436E8DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+----
+
+[source,sql]
+----
+select count(*) from CONTENT_LABEL WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+[source]
+----
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+----
+
+[source,sql]
+----
+DELETE FROM CONTENT_LABEL WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+
+
+
+And another
+
+[source]
+----
+2017-04-01 16:00:16,074 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Unsuccessful: alter table LINKS add constraint FK45157998DD41734 foreign key (CONTENTID) references CONTENT (CONTENTID)
+2017-04-01 16:00:16,074 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_2b`, CONSTRAINT `FK45157998DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+2
+----
+
+[source,sql]
+----
+select count(*) from LINKS where CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT); 
+----
+
+
+
+[source]
+----
++----------+
+| count(*) |
++----------+
+|     1034 |
++----------+
+----
+
+[source,sql]
+----
+DELETE from LINKS where CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+
+And of course another
+
+
+[source]
+----
+2017-04-01 16:04:29,094 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Unsuccessful: alter table EXTRNLNKS add constraint FK97C10FE78DD41734 foreign key (CONTENTID) references CONTENT (CONTENTID)
+2017-04-01 16:04:29,095 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_34`, CONSTRAINT `FK97C10FE78DD41734` FOREIGN KEY (`CONTENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+2017-04-01 16:04:29,096 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute couldnot complete schema update
+----
+
+[source,sql]
+----
+SELECT COUNT(*) FROM EXTRNLNKS WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+[source]
+----
++----------+
+| COUNT(*) |
++----------+
+|        4 |
++----------+
+----
+
+[source,sql]
+----
+DELETE FROM EXTRNLNKS WHERE CONTENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+
+And another
+
+
+[source]
+----
+2017-04-01 16:09:28,764 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Unsuccessful: alter table CONFANCESTORS add constraint FK9494E23CC45E94DC foreign key (DESCENDENTID) references CONTENT (CONTENTID)
+2017-04-01 16:09:28,765 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute Cannot add or update a child row: a foreign key constraint fails (`wikidb`.`#sql-1_3d`, CONSTRAINT `FK9494E23CC45E94DC` FOREIGN KEY (`DESCENDENTID`) REFERENCES `CONTENT` (`CONTENTID`))
+2017-04-01 16:09:28,766 ERROR [main] [hibernate.tool.hbm2ddl.SchemaUpdate] execute couldnot complete schema update
+----
+
+
+[source,sql]
+----
+SELECT COUNT(*) FROM CONFANCESTORS WHERE ANCESTORID NOT IN (SELECT CONTENTID FROM CONTENT);
+SELECT COUNT(*) FROM CONFANCESTORS WHERE DESCENDENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+[source]
+----
++----------+
+| COUNT(*) |
++----------+
+|        7 |
++----------+
++----------+
+| COUNT(*) |
++----------+
+|       29 |
++----------+
+----
+
+[source,sql]
+----
+DELETE FROM CONFANCESTORS WHERE ANCESTORID NOT IN (SELECT CONTENTID FROM CONTENT);
+DELETE FROM CONFANCESTORS WHERE DESCENDENTID NOT IN (SELECT CONTENTID FROM CONTENT);
+----
+
+---
+
+
+Error while removing thumbnails
+
+[source]
+----
+2017-04-01 16:14:24,493 ERROR [main] [atlassian.confluence.upgrade.UpgradeLauncherServletContextListener] contextInitialized Upgrade failed, application will not start: Upgrade task com.atlassian.confluence.upgrade.upgradetask.PurgeThumbnailsUpgradeTask@2d437a6d failed during the UPGRADE phase
+com.atlassian.confluence.upgrade.UpgradeException: Upgrade task com.atlassian.confluence.upgrade.upgradetask.PurgeThumbnailsUpgradeTask@2d437a6d failed during the UPGRADE phase
+        at com.atlassian.confluence.upgrade.AbstractUpgradeManager.executeUpgradeStep(AbstractUpgradeManager.java:205)
+        at com.atlassian.confluence.upgrade.AbstractUpgradeManager.runUpgradeTasks(AbstractUpgradeManager.java:146)
+        at com.atlassian.confluence.upgrade.AbstractUpgradeManager.upgrade(AbstractUpgradeManager.java:96)
+        at com.atlassian.confluence.upgrade.impl.DefaultUpgradeManager.upgrade(DefaultUpgradeManager.java:140)
+        at com.atlassian.confluence.upgrade.UpgradeLauncherServletContextListener.contextInitialized(UpgradeLauncherServletContextListener.java:28)
+        at org.apache.catalina.core.StandardContext.listenerStart(StandardContext.java:4205)
+        at org.apache.catalina.core.StandardContext.start(StandardContext.java:4704)
+        at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1053)
+        at org.apache.catalina.core.StandardHost.start(StandardHost.java:840)
+        at org.apache.catalina.core.ContainerBase.start(ContainerBase.java:1053)
+        at org.apache.catalina.core.StandardEngine.start(StandardEngine.java:463)
+        at org.apache.catalina.core.StandardService.start(StandardService.java:525)
+        at org.apache.catalina.core.StandardServer.start(StandardServer.java:754)
+        at org.apache.catalina.startup.Catalina.start(Catalina.java:595)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+        at java.lang.reflect.Method.invoke(Method.java:597)
+        at org.apache.catalina.startup.Bootstrap.start(Bootstrap.java:289)
+        at org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:414)
+2017-04-01 16:14:24,497 ERROR [main] [atlassian.confluence.upgrade.UpgradeLauncherServletContextListener] contextInitialized 1 errors were encountered during upgrade:
+2017-04-01 16:14:24,497 ERROR [main] [atlassian.confluence.upgrade.UpgradeLauncherServletContextListener] contextInitialized 1: Error removing thumbnails directory [/srv/wiki/home/thumbnails] from confluence home
+2
+----
+
+
+[source]
+----
+mv thumbnails thumbnails.bak
+----
