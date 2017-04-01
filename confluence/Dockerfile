@@ -17,7 +17,7 @@ RUN curl -Lks https://www.atlassian.com/software/confluence/downloads/binary/atl
 RUN echo "confluence.home = /srv/wiki/home" > /srv/wiki/base/confluence/WEB-INF/classes/confluence-init.properties
 
 # Download and place MySQL driver
-ENV MYSQL_DRIVER=mysql-connector-java-5.1.30
+ENV MYSQL_DRIVER=mysql-connector-java-5.1.40
 RUN curl -L http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_DRIVER}.tar.gz | tar zxv -C /tmp; \
     cp /tmp/${MYSQL_DRIVER}/${MYSQL_DRIVER}-bin.jar /srv/wiki/base/lib/${MYSQL_DRIVER}-bin.jar; \
     rm -rf /tmp/${MYSQL_DRIVER}
