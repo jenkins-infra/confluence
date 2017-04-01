@@ -3,7 +3,7 @@
 FROM openjdk:7-jre
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
-ENV CONFLUENCE_VERSION 5.0.3
+ENV CONFLUENCE_VERSION 5.10.8
 
 RUN apt-get -q update && apt-get install -qy cron xmlstarlet curl
 
