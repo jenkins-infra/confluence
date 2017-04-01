@@ -60,6 +60,7 @@ if [ -f $CFGXML ]; then
   add-property hibernate.connection.username "$DB_USER"
   add-property hibernate.connection.password "$DB_PASSWORD"
   add-property hibernate.connection.url "$(xmlstarlet esc "$DB_JDBC_URL")"
+  add-property hibernate.connection.isolation "2"
   cat $CFGXML \
   | xmlstarlet ed -d "//property[@name='hibernate.connection.datasource']" \
   >  /tmp/confluence.cfg.xml
