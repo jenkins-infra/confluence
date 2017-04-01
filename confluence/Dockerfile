@@ -1,11 +1,11 @@
 # Basics
 #
-FROM openjdk:8-jre
+FROM openjdk:7-jre
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
-ENV CONFLUENCE_VERSION 6.1.0
+ENV CONFLUENCE_VERSION 5.0.3
 
-RUN apt-get -q update && apt-get install -qy xmlstarlet curl
+RUN apt-get -q update && apt-get install -qy cron xmlstarlet curl
 
 RUN /usr/sbin/groupadd atlassian ; /usr/sbin/groupadd --gid 2000 wiki; /usr/sbin/useradd --create-home --home-dir /srv/wiki --groups atlassian --uid 2000 --gid wiki --shell /bin/bash wiki
 
