@@ -43,5 +43,7 @@ RUN chown -R wiki:wiki /srv/wiki
 WORKDIR /srv/wiki
 VOLUME ["/srv/wiki/home"]
 EXPOSE 8080
+# Needed for collaborative editing
+EXPOSE 8090
 USER wiki
 CMD ["/launch"]
