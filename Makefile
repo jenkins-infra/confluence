@@ -17,7 +17,7 @@ startdb:
 		-e MYSQL_USER=wiki \
 		-e MYSQL_PASSWORD=kiwi \
 		-e MYSQL_DATABASE=wikidb \
-		mariadb
+		mariadb --character-set-server=utf8 --default-storage-engine=innodb
     
 restoredb:
 	# restore dump from DB
