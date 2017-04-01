@@ -1,6 +1,6 @@
 # Basics
 #
-FROM openjdk:7-jre
+FROM openjdk:8-jre
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
 ENV CONFLUENCE_VERSION 5.10.8
