@@ -75,3 +75,7 @@ you can use the same evaluation license over and over.
 
 ## TODO
 * oom_adj
+
+## Connection to mock_ldap need to be done on ldap port 389 instead of ldap
+Change ldaps:// to ldap:// in `confluence/site/conf/server.xml`
+Change Port 636 to 389 in confluence/site/classes/atlassian-user.xml
