@@ -49,15 +49,6 @@ parse_url() {
   [ -n "$query" ] && eval "export ${prefix}_QUERY=\"$query\"" || rc=$?
 }
 
-download_mysql_driver() {
-  local driver="mysql-connector-java-5.1.40"
-  if [ ! -f "$1/$driver-bin.jar" ]; then
-    echo "Downloading MySQL JDBC Driver..."
-    curl -L http://dev.mysql.com/get/Downloads/Connector-J/$driver.tar.gz | tar zxv -C /tmp
-    cp /tmp/$driver/$driver-bin.jar $1/$driver-bin.jar
-  fi
-}
-
 read_var() {
   eval "echo \$$1_$2"
 }
@@ -81,7 +72,6 @@ extract_database_url() {
       local database_type="postgres72"
       ;;
     mysql|mysql2)
-      download_mysql_driver "$mysql_install"
       if [ -z "$(read_var $prefix PORT)" ]; then
         eval "${prefix}_PORT=3306"
       fi
@@ -120,6 +110,7 @@ cat ~/site/conf/server.xml | sed \
   -e "s,@@DB_USER@@,$DB_USER," \
   -e "s,@@DB_PASSWORD@@,$DB_PASSWORD," \
   -e "s,@@DB_JDBC_DRIVER@@,$DB_JDBC_DRIVER," \
+  -e "s,@@DB_JDBC_URL@@,$DB_JDBC_URL," \
   -e "s,@@LDAP_HOST@@,$LDAP_HOST," \
   | xmlstarlet ed -u "//Resource[@name='jdbc/wiki']/@url" -v "$DB_JDBC_URL" \
   > /tmp/server.xml
@@ -151,12 +142,13 @@ echo DB=$DB_JDBC_URL
 CFGXML=~/home/confluence.cfg.xml
 if [ -f $CFGXML ]; then
   # if config file already exists, touch up its database config
-  add-property hibernate.connection.username "$DB_USER"
-  add-property hibernate.connection.password "$DB_PASSWORD"
-  add-property hibernate.connection.url "$(xmlstarlet esc "$DB_JDBC_URL")"
   add-property hibernate.connection.isolation "2"
+  add-property hibernate.connection.datasource "java:comp/env/jdbc/wiki"
+  add-property hibernate.dialect "com.atlassian.hibernate.dialect.MySQLDialect"
   cat $CFGXML \
-  | xmlstarlet ed -d "//property[@name='hibernate.connection.datasource']" \
+  | xmlstarlet ed -d "//property[@name='hibernate.connection.username']" \
+  | xmlstarlet ed -d "//property[@name='hibernate.connection.password']" \
+  | xmlstarlet ed -d "//property[@name='hibernate.connection.url']" \
   >  /tmp/confluence.cfg.xml
   mv /tmp/confluence.cfg.xml $CFGXML
 fi
