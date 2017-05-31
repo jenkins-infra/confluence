@@ -17,8 +17,8 @@ startdb:
 		-e MYSQL_USER=wiki \
 		-e MYSQL_PASSWORD=kiwi \
 		-e MYSQL_DATABASE=wikidb \
-		mariadb --character-set-server=utf8 --default-storage-engine=innodb
-    
+		mariadb --character-set-server=utf8 --default-storage-engine=innodb --innodb-log-file-size=536870916
+
 restoredb:
 	# restore dump from DB
 	gunzip -c backup.db.gz | docker exec -i wiki-db mysql --user=wiki --password=kiwi wikidb
