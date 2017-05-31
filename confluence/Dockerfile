@@ -3,8 +3,8 @@
 FROM openjdk:8-jre
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
-ENV CONFLUENCE_VERSION 5.10.8
-ENV MYSQL_DRIVER mysql-connector-java-5.1.40
+ENV CONFLUENCE_VERSION 5.9.14
+ENV MYSQL_DRIVER mysql-connector-java-5.1.42
 
 # The compartmentalized URL that JIRA is going to be referenced as.
 ENV PROXY_SCHEME https
