@@ -15,7 +15,7 @@ CATALINA_OPTS="
  -XX:GCLogFileSize=2M
  -Djava.awt.headless=true
  -Datlassian.plugins.enable.wait=300
- -Xms4096m -Xmx8192m -XX:+UseG1GC
+ -Xms8192m -Xmx8192m -XX:+UseG1GC
  -XX:OnOutOfMemoryError=/srv/wiki/site/bin/oomkill
  ${CATALINA_OPTS}
 "
