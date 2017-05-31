@@ -76,16 +76,21 @@ you can use the same evaluation license over and over.
 ## TODO
 * oom_adj
 
-## Connection to mock_ldap need to be done on ldap port 389 instead of ldap
+## Mock Ldap
+Connection to mock_ldap need to be done on ldap port 389 instead of ldap
 Change ldaps:// to ldap:// in `confluence/site/conf/server.xml`
 Change Port 636 to 389 in confluence/site/classes/atlassian-user.xml
 
 ## UTF8
-Confluence will not start anymore if it detects non utf8 tables.
-The list of database modification that need to be applied can be retrieved with following script 'scripts/utf8_encoding.sql'.
+Confluence will not start anymore if it detects non utf8 tables.  
+The list of database modification that need to be applied can be retrieved with following script 'scripts/utf8_encoding.sql'.  
 You then need to apply them.
 
-  mysql -h localhost -u wiki -p kiwi wikidb < scripts/utf8_encoding.sql > scripts/to_update.sql
-  sed -i '/CONCAT/d' scripts/to_update.sql
-  mysql -h localhost -u wiki -p kiwi wikidb < scripts/to_update.sql
-
+```
+## Generate sql migration script
+mysql -h localhost -u wiki -p kiwi wikidb < scripts/utf8_encoding.sql > scripts/to_update.sql
+## Remove CONCAT entry from migration script
+sed -i '/CONCAT/d' scripts/to_update.sql
+## Apply migration
+mysql -h localhost -u wiki -p kiwi wikidb < scripts/to_update.sql
+```
