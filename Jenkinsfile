@@ -8,20 +8,24 @@ properties([
 ])
 
 node('docker') {
-    checkout scm
+    def image
+    stage('Build') {
+        timestamps {
+            deleteDir()
+            checkout scm
 
-    /* Using this hack right now to grab the appropriate abbreviated SHA1 of
-     * our current build's commit. We must do this because right now I cannot
-     * refer to `env.GIT_COMMIT` in Pipeline scripts
-     */
-    sh 'git rev-parse HEAD > GIT_COMMIT'
-    shortCommit = readFile('GIT_COMMIT').take(6)
-    def imageTag = "build${shortCommit}"
+            sh 'git rev-parse HEAD > GIT_COMMIT'
+            shortCommit = readFile('GIT_COMMIT').take(6)
+            def imageTag = "${env.BUILD_ID}-build${shortCommit}"
+            echo "Creating the container ${imageName}:${imageTag}"
+            image = docker.build("${imageName}:${imageTag}", '--no-cache --rm confluence')
+        }
 
-
-    stage 'Build'
-    def whale = docker.build("${imageName}:${imageTag}", '--no-cache --rm confluence')
-
-    stage 'Deploy'
-    whale.push()
+    }
+    /* Assuming we're not inside of a pull request or multibranch pipeline */
+    if (!(env.CHANGE_ID || env.BRANCH_NAME)) {
+        stage('Publish') {
+            timestamps { image.push() }
+        }
+    }
 }
