@@ -1,7 +1,31 @@
 = Upgrade Notes
 
+== 5.0.3 to 5.9.14
+* Usage of Jdbc resource
+* Upgrade from Openjdk 7 to Openjdk 8
+* Upgrade to Tomcat 8
+* Upgrade java heap size to 8Gb
+* Database must use utf8
+* Database upgrade very slow
 
-== 3,5.17 to 5.0.3
+----
+  # Generate mysql script to fix non utf8 table,columns
+  sudo -Hu wiki mysql --max_allowed_packet=256M hudson_confluence < scripts/utf8_encoding.sql > /tmp/fix_utf8_encoding.sql
+  # Remove 'CONCAT entry from /tmp/fix_utf8_encoding.sql'
+  sed -i '/CONCAT/d' /tmp/fix_utf8_encoding.sql
+  # Fix database for utf8
+  sudo -Hu wiki mysql --max_allowed_packet=256M hudson_confluence < /tmp/fix_utf8_encoding.sql
+  # Remove /tmp/fix_utf8_encoding.sql
+  rm /tmp/fix_utf8_encoding.sql
+----
+
+
+=== Issues encountered
+* Database must be fully encoded in utf8
+* link:https://confluence.atlassian.com/kb/how-to-fix-the-collation-and-character-set-of-a-mysql-database-744326173.html[Fix collation and character set of mysql]
+* link:https://confluence.atlassian.com/doc/configuring-database-character-encoding-177698.html[Configure database encoding]
+
+== 3.5.17 to 5.0.3
 
 * Upgraded from JDK6 to an `openjdk:7-jre` image since 5.x dropped support for JRE6
 * No notable database issues on migration, just lots of I/O saturation in the process

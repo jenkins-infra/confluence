@@ -3,7 +3,17 @@
 FROM openjdk:8-jre
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
-ENV CONFLUENCE_VERSION 5.10.8
+ENV CONFLUENCE_VERSION 5.9.14
+ENV MYSQL_DRIVER mysql-connector-java-5.1.42
+
+# The compartmentalized URL that JIRA is going to be referenced as.
+ENV PROXY_SCHEME https
+ENV PROXY_NAME wiki.jenkins-ci.org
+ENV PROXY_PORT 443
+
+# Password to LDAP server.
+ENV LDAP_PASSWORD password
+ENV LDAP_HOST ldap.jenkins.io
 
 RUN apt-get -q update && apt-get install -qy cron xmlstarlet curl
 
@@ -17,7 +27,6 @@ RUN curl -Lks https://www.atlassian.com/software/confluence/downloads/binary/atl
 RUN echo "confluence.home = /srv/wiki/home" > /srv/wiki/base/confluence/WEB-INF/classes/confluence-init.properties
 
 # Download and place MySQL driver
-ENV MYSQL_DRIVER=mysql-connector-java-5.1.40
 RUN curl -L http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_DRIVER}.tar.gz | tar zxv -C /tmp; \
     cp /tmp/${MYSQL_DRIVER}/${MYSQL_DRIVER}-bin.jar /srv/wiki/base/lib/${MYSQL_DRIVER}-bin.jar; \
     rm -rf /tmp/${MYSQL_DRIVER}
@@ -25,20 +34,11 @@ RUN curl -L http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_DRIVER}.tar.g
 # Allow the user to start cron
 RUN echo "wiki  ALL=(ALL) NOPASSWD: /usr/sbin/cron" >> /etc/sudoers
 
-# The compartmentalized URL that JIRA is going to be referenced as.
-ENV PROXY_SCHEME https
-ENV PROXY_NAME wiki.jenkins-ci.org
-ENV PROXY_PORT 443
-
-# Password to LDAP server.
-ENV LDAP_PASSWORD password
-ENV LDAP_HOST ldap.jenkins.io
 
 ADD launch.bash /launch
 ADD site /srv/wiki/site
 
 RUN chown -R wiki:wiki /srv/wiki
-
 
 WORKDIR /srv/wiki
 VOLUME ["/srv/wiki/home"]
