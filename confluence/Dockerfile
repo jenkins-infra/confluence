@@ -8,7 +8,7 @@ ENV MYSQL_DRIVER mysql-connector-java-5.1.42
 
 # The compartmentalized URL that JIRA is going to be referenced as.
 ENV PROXY_SCHEME https
-ENV PROXY_NAME wiki.jenkins-ci.org
+ENV PROXY_NAME wiki.jenkins.io
 ENV PROXY_PORT 443
 
 # Password to LDAP server.
