@@ -25,7 +25,9 @@ node('docker') {
     /* Assuming we're not inside of a pull request or multibranch pipeline */
     if (infra.isTrusted()) {
         stage('Publish') {
-            timestamps { image.push() }
+            infra.withDockerCredentials {
+                timestamps { image.push() }
+            }
         }
     }
 }
