@@ -15,7 +15,7 @@
 
           <!-- to simplify going through wizard, expose a fully configured DataSource -->
           <Resource name="jdbc/wiki" auth="Container" type="javax.sql.DataSource"
-                    maxTotal="15" maxIdle="7" maxWaitMillis="10000"
+                    maxTotal="200" maxIdle="20" maxWaitMillis="10000"
                     username="@@DB_USER@@" password="@@DB_PASSWORD@@" driverClassName="@@DB_JDBC_DRIVER@@"
                     defaultTransactionIsolation="READ_COMMITTED"
                     validationQuery="Select 1"
