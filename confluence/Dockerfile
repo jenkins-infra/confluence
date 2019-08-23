@@ -1,6 +1,6 @@
 # Basics
 #
-FROM openjdk:8-jre
+FROM adoptopenjdk:8-jre-hotspot
 MAINTAINER Jenkins Infra team <infra@lists.jenkins-ci.org>
 
 ENV CONFLUENCE_VERSION 6.15.2
