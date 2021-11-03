@@ -1,5 +1,8 @@
 # Confluence Container for jenkins-ci.org
-[![Build Status](http://ci.jenkins-ci.org/buildStatus/icon?job=infra_confluence)](http://ci.jenkins-ci.org/view/Infrastructure/job/infra_confluence/)
+
+NOTE: this repository is deprecated and archived (e.g. read-only). For the latest version, check the following page: <https://github.com/jenkins-infra/docker-confluence-data>
+
+// [![Build Status](http://ci.jenkins-ci.org/buildStatus/icon?job=infra_confluence)](http://ci.jenkins-ci.org/view/Infrastructure/job/infra_confluence/)
 
 This container defines Confluence behind wiki.jenkins-ci.org.
 The container consists of three main pieces:
